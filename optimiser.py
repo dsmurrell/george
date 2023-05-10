@@ -9,6 +9,7 @@ openai.api_key = c["openai_key"]
 from termcolor import colored
 
 model = "gpt-4"
+# model = "gpt-3.5-turbo"
 
 
 def check_description(file):
@@ -20,13 +21,21 @@ def check_description(file):
         {
             "role": "user",
             "content": f"""
-For this project description, can you score it for each of the following from 1 to 10.
+For this project description, can you score it for each of the following criteria from 1 to 10. Can you give respond with the score of each criteria.
 
 - Whether it relates to population genomics
 - Whether it relates to precision medicine
 - Whether it involes patients
 
-Then, can you add up the scores and give me the total score?
+There are a few exclusion criteria, which if met, disqualifies the project from being considered and the total score should be made 0.:
+
+- Relates to cancer
+
+Then, can you add up the scores and give me the total score? If an exclusion is hit then the total score should be zero.
+
+Add the total score in the following format at the end of the response:
+
+"Total score: x"
 
 Project description: {file}
 """,
@@ -55,5 +64,5 @@ for i, file in enumerate(files):
     with open(file, "r") as f:
         text = f.read()
         check_description(text)
-    if i > 10:
+    if i > 100:
         exit()
